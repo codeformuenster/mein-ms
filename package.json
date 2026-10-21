@@ -1,0 +1,10 @@
+{
+  "name": "mein-ms-static",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/search.test.mjs && python3 -B -m unittest discover -s tests -p 'test_*.py'",
+    "build": "python3 scripts/build.py",
+    "dev": "python3 -m http.server 4175 --bind 127.0.0.1 --directory dist"
+  }
+}

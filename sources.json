@@ -1,0 +1,239 @@
+{
+  "sources": [
+    {
+      "category": "kindergarden",
+      "format": "nrw-kitas-csv",
+      "url": "https://www.opengeodata.nrw.de/produkte/bildung_wissenschaft/kitas/KiTasNRW_EPSG4326_CSV.csv",
+      "sourcePage": "https://www.opengeodata.nrw.de/produkte/bildung_wissenschaft/kitas/",
+      "dataDate": "2025-06-02",
+      "nameFields": [
+        "Einrichtung Name"
+      ],
+      "license": "Datenlizenz Deutschland – Namensnennung 2.0; Land NRW (MKJFGFI), Änderung: Auswahl Münster"
+    },
+    {
+      "category": "container",
+      "format": "overpass-json",
+      "url": "https://overpass-api.de/api/interpreter",
+      "query": "[out:json][timeout:25];area[\"name\"=\"Münster\"][\"admin_level\"=\"6\"]->.a;nwr[\"amenity\"=\"recycling\"][\"recycling:glass\"=\"yes\"](area.a);out center tags;",
+      "sourcePage": "https://www.openstreetmap.org/copyright",
+      "license": "© OpenStreetMap-Mitwirkende, ODbL 1.0"
+    },
+    {
+      "category": "babychange",
+      "format": "babychange-csv",
+      "path": "sources/stillplaetze.csv",
+      "sourcePage": "https://github.com/codeformuenster/muenster-dashboard/tree/master/import-scripts/stillplaetze",
+      "license": "Originalquelle: Stillflyer des Kreisverbands der Hebammen Münster; Rechte wie im Altbestand, unveränderte lokale Quelle"
+    },
+    {
+      "category": "pool",
+      "format": "geojson",
+      "url": "https://www.stadt-muenster.de/ows/mapserv706/poiserv?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ms%3Abaeder&OUTPUTFORMAT=GEOJSON&SRSNAME=EPSG%3A4326&COUNT=10000",
+      "nameFields": [
+        "NAME",
+        "Name",
+        "name",
+        "standpunkt"
+      ],
+      "idFields": [
+        "ID",
+        "LFDNR",
+        "id"
+      ],
+      "sourcePage": "https://opendata.stadt-muenster.de/",
+      "license": "Stadt Münster; Lizenz am wiederhergestellten Quellendownload prüfen",
+      "availabilityNote": "Historische WFS-Adresse; HTTP 404 am 21.10.2026. Vorhandene Daten bleiben bis zur Reparatur der Quelle erhalten."
+    },
+    {
+      "category": "agencies",
+      "format": "geojson",
+      "url": "https://www.stadt-muenster.de/ows/mapserv706/poiserv?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ms%3Abehoerden&OUTPUTFORMAT=GEOJSON&SRSNAME=EPSG%3A4326&COUNT=10000",
+      "nameFields": [
+        "NAME",
+        "Name",
+        "name",
+        "standpunkt"
+      ],
+      "idFields": [
+        "ID",
+        "LFDNR",
+        "id"
+      ],
+      "sourcePage": "https://opendata.stadt-muenster.de/",
+      "license": "Stadt Münster; Lizenz am wiederhergestellten Quellendownload prüfen",
+      "availabilityNote": "Historische WFS-Adresse; HTTP 404 am 21.10.2026. Vorhandene Daten bleiben bis zur Reparatur der Quelle erhalten."
+    },
+    {
+      "category": "bookbus",
+      "format": "geojson",
+      "url": "https://www.stadt-muenster.de/ows/mapserv706/poiserv?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ms%3Abuecherbus&OUTPUTFORMAT=GEOJSON&SRSNAME=EPSG%3A4326&COUNT=10000",
+      "nameFields": [
+        "NAME",
+        "Name",
+        "name",
+        "standpunkt"
+      ],
+      "idFields": [
+        "ID",
+        "LFDNR",
+        "id"
+      ],
+      "sourcePage": "https://opendata.stadt-muenster.de/",
+      "license": "Stadt Münster; Lizenz am wiederhergestellten Quellendownload prüfen",
+      "availabilityNote": "Historische WFS-Adresse; HTTP 404 am 21.10.2026. Vorhandene Daten bleiben bis zur Reparatur der Quelle erhalten."
+    },
+    {
+      "category": "library",
+      "format": "geojson",
+      "url": "https://www.stadt-muenster.de/ows/mapserv706/poiserv?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ms%3Abuechereien&OUTPUTFORMAT=GEOJSON&SRSNAME=EPSG%3A4326&COUNT=10000",
+      "nameFields": [
+        "NAME",
+        "Name",
+        "name",
+        "standpunkt"
+      ],
+      "idFields": [
+        "ID",
+        "LFDNR",
+        "id"
+      ],
+      "sourcePage": "https://opendata.stadt-muenster.de/",
+      "license": "Stadt Münster; Lizenz am wiederhergestellten Quellendownload prüfen",
+      "availabilityNote": "Historische WFS-Adresse; HTTP 404 am 21.10.2026. Vorhandene Daten bleiben bis zur Reparatur der Quelle erhalten."
+    },
+    {
+      "category": "cemetery",
+      "format": "geojson",
+      "url": "https://www.stadt-muenster.de/ows/mapserv706/poiserv?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ms%3Afriedhoefe&OUTPUTFORMAT=GEOJSON&SRSNAME=EPSG%3A4326&COUNT=10000",
+      "nameFields": [
+        "NAME",
+        "Name",
+        "name",
+        "standpunkt"
+      ],
+      "idFields": [
+        "ID",
+        "LFDNR",
+        "id"
+      ],
+      "sourcePage": "https://opendata.stadt-muenster.de/",
+      "license": "Stadt Münster; Lizenz am wiederhergestellten Quellendownload prüfen",
+      "availabilityNote": "Historische WFS-Adresse; HTTP 404 am 21.10.2026. Vorhandene Daten bleiben bis zur Reparatur der Quelle erhalten."
+    },
+    {
+      "category": "wc",
+      "format": "geojson",
+      "url": "https://www.stadt-muenster.de/ows/mapserv706/poiserv?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ms%3AToiletten&OUTPUTFORMAT=GEOJSON&SRSNAME=EPSG%3A4326&COUNT=10000",
+      "nameFields": [
+        "NAME",
+        "Name",
+        "name",
+        "standpunkt"
+      ],
+      "idFields": [
+        "ID",
+        "LFDNR",
+        "id"
+      ],
+      "sourcePage": "https://opendata.stadt-muenster.de/",
+      "license": "Stadt Münster; Lizenz am wiederhergestellten Quellendownload prüfen",
+      "availabilityNote": "Historische WFS-Adresse; HTTP 404 am 21.10.2026. Vorhandene Daten bleiben bis zur Reparatur der Quelle erhalten."
+    },
+    {
+      "category": "wifi",
+      "format": "geojson",
+      "url": "https://www.stadt-muenster.de/ows/mapserv706/poiserv?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ms%3AWLAN-Standorte&OUTPUTFORMAT=GEOJSON&SRSNAME=EPSG%3A4326&COUNT=10000",
+      "nameFields": [
+        "NAME",
+        "Name",
+        "name",
+        "standpunkt"
+      ],
+      "idFields": [
+        "ID",
+        "LFDNR",
+        "id"
+      ],
+      "sourcePage": "https://opendata.stadt-muenster.de/",
+      "license": "Stadt Münster; Lizenz am wiederhergestellten Quellendownload prüfen",
+      "availabilityNote": "Historische WFS-Adresse; HTTP 404 am 21.10.2026. Vorhandene Daten bleiben bis zur Reparatur der Quelle erhalten."
+    },
+    {
+      "category": "papierkorb",
+      "format": "geojson",
+      "url": "https://www.stadt-muenster.de/ows/mapserv706/poiserv?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ms%3Apapierkorb&OUTPUTFORMAT=GEOJSON&SRSNAME=EPSG%3A4326&COUNT=10000",
+      "nameFields": [
+        "NAME",
+        "Name",
+        "name",
+        "standpunkt"
+      ],
+      "idFields": [
+        "ID",
+        "LFDNR",
+        "id"
+      ],
+      "sourcePage": "https://opendata.stadt-muenster.de/",
+      "license": "Stadt Münster; Lizenz am wiederhergestellten Quellendownload prüfen",
+      "availabilityNote": "Historische WFS-Adresse; HTTP 404 am 21.10.2026. Vorhandene Daten bleiben bis zur Reparatur der Quelle erhalten."
+    },
+    {
+      "category": "school",
+      "format": "geojson",
+      "url": "https://www.stadt-muenster.de/ows/mapserv706/schulenserv?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=ms%3Aschulen&OUTPUTFORMAT=GEOJSON&SRSNAME=EPSG%3A4326&COUNT=10000",
+      "nameFields": [
+        "NAME",
+        "Name",
+        "name",
+        "standpunkt"
+      ],
+      "idFields": [
+        "ID",
+        "LFDNR",
+        "id"
+      ],
+      "sourcePage": "https://opendata.stadt-muenster.de/",
+      "license": "Stadt Münster; Lizenz am wiederhergestellten Quellendownload prüfen",
+      "availabilityNote": "Historische WFS-Adresse; HTTP 404 am 21.10.2026. Vorhandene Daten bleiben bis zur Reparatur der Quelle erhalten."
+    },
+    {
+      "category": "playground",
+      "format": "geojson",
+      "url": "https://www.stadt-muenster.de/ows/mapserv706/odspielplserv?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=spielplaetze&OUTPUTFORMAT=GEOJSON&SRSNAME=EPSG%3A4326&COUNT=10000",
+      "nameFields": [
+        "NAME",
+        "Name",
+        "name",
+        "standpunkt"
+      ],
+      "idFields": [
+        "ID",
+        "LFDNR",
+        "id"
+      ],
+      "sourcePage": "https://opendata.stadt-muenster.de/",
+      "license": "Stadt Münster; Lizenz am wiederhergestellten Quellendownload prüfen",
+      "availabilityNote": "Historische WFS-Adresse; HTTP 404 am 21.10.2026. Vorhandene Daten bleiben bis zur Reparatur der Quelle erhalten."
+    },
+    {
+      "category": "sport",
+      "format": "geojson",
+      "url": "https://www.stadt-muenster.de/ows/mapserv706/odsportstserv?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=sportstaetten&OUTPUTFORMAT=GEOJSON&SRSNAME=EPSG%3A4326&COUNT=10000",
+      "nameFields": [
+        "NAME",
+        "Name",
+        "name",
+        "standpunkt"
+      ],
+      "idFields": [
+        "ID",
+        "LFDNR",
+        "id"
+      ],
+      "sourcePage": "https://opendata.stadt-muenster.de/",
+      "license": "Stadt Münster; Lizenz am wiederhergestellten Quellendownload prüfen",
+      "availabilityNote": "Historische WFS-Adresse; HTTP 404 am 21.10.2026. Vorhandene Daten bleiben bis zur Reparatur der Quelle erhalten."
+    }
+  ]
+}

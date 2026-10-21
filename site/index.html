@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#c94445">
+  <meta name="description" content="Münster entdecken: Spielplätze, Kitas, Büchereien, WCs und vieles mehr auf einer Karte. Finde die Orte in deinem Viertel.">
+  <title>Mein Münster · Dein Viertel entdecken</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./vendor/leaflet/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./playful.css">
+  <script defer src="./vendor/leaflet/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <a class="skip" href="#results">Zu den Ergebnissen</a>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Mein Münster – Startseite"><span class="brand-mark" aria-hidden="true">m<span>•</span></span><span>mein münster<span class="brand-sub">DEINE STADT. DEIN VIERTEL.</span></span></a>
+    <nav aria-label="Hauptnavigation"><a class="nav-active" href="./">Entdecken</a><button id="about" class="text-button">Über das Projekt <span aria-hidden="true">↗</span></button></nav>
+    <span class="city-label"><span class="status-dot"></span> Von hier. Für hier.</span>
+  </header>
+  <section class="city-hero" aria-labelledby="city-title">
+    <div class="hero-copy"><p class="eyebrow">MIT LEEZE. ZU FUSS. EINFACH LOS.</p><h1 id="city-title">Ganz schön viel<br><mark>Münster.</mark></h1><p>Dein Viertel steckt voller Lieblingsorte. Entdeck sie!</p></div>
+    <span class="leeze-sticker" aria-hidden="true"><svg viewBox="0 0 90 58" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="20" cy="39" r="15"/><circle cx="70" cy="39" r="15"/><path d="m20 39 15-27 18 27H20l13-22h28l9 22M30 12h12m11 27 10-34h10"/></svg><span>LEEZE LIEBE</span></span>
+    <span class="hero-location"><span aria-hidden="true">↗</span> Zuhause zwischen<br>Giebeln &amp; Grün.</span>
+    <a class="photo-credit" href="https://www.pexels.com/photo/scenic-view-of-prinzipalmarkt-in-munster-31111683/" target="_blank" rel="noopener noreferrer">Prinzipalmarkt · Foto: Ramon Karolan / Pexels</a>
+  </section>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Suche und Ergebnisse">
+      <section class="discovery">
+        <div class="discovery-title"><h2>Was geht ums Eck?</h2><span aria-hidden="true">✳</span></div>
+        <p class="intro">Such dir was Schönes aus.</p>
+        <form id="search-form" role="search">
+          <label class="search-box"><span id="search-icon" aria-hidden="true"></span><span class="sr-only">Ort, Straße oder Kategorie suchen</span><input id="search" type="search" placeholder="Was suchst du in Münster?" autocomplete="off" maxlength="300"><kbd aria-hidden="true">↵</kbd></label>
+          <div class="location-row"><label><span class="sr-only">Stadtteil</span><select id="district" aria-label="Stadtteil"><option value="">Ganz Münster</option></select></label><button id="locate" type="button" title="Standort nur für diese Suche verwenden"><span aria-hidden="true">◎</span> In meiner Nähe</button></div>
+        </form>
+        <div class="section-label"><span>WORAUF HAST DU LUST?</span><button id="all-categories" class="text-button" aria-expanded="false">Alle Kategorien <span aria-hidden="true">＋</span></button></div>
+        <div id="category-grid" class="category-grid" role="group" aria-label="Kategorien"></div>
+        <div id="more-categories" class="more-categories" role="group" aria-label="Weitere Kategorien" hidden></div>
+      </section>
+      <section class="results-section" aria-labelledby="results-heading">
+        <div class="result-top"><div><p class="eyebrow" id="scope-label">GANZ MÜNSTER</p><h2 id="results-heading">Orte entdecken <span id="result-count"></span></h2></div><button id="reset" class="text-button" title="Alle Filter zurücksetzen">Zurücksetzen</button></div>
+        <div class="filter-row"><label><span class="sr-only">Suchradius</span><select id="radius" aria-label="Suchradius"><option value="0">Alle Entfernungen</option><option value="0.5">500 m Umkreis</option><option value="1">1 km Umkreis</option><option value="2">2 km Umkreis</option><option value="5">5 km Umkreis</option><option value="10">10 km Umkreis</option></select></label><label><span class="sr-only">Sortierung</span><select id="sort" aria-label="Sortierung"><option value="distance">Nächste zuerst</option><option value="name">Name A–Z</option></select></label></div>
+        <div id="message" class="message" role="status" aria-live="polite">Orte werden geladen …</div>
+        <div id="results" class="results" tabindex="-1" aria-busy="true"></div>
+        <button id="load-more" class="load-more" hidden>Weitere Orte anzeigen</button>
+      </section>
+      <footer class="sidebar-footer"><span>Offene Daten. Für alle.</span><div><a href="./copyright/">Daten & Quellen</a><a href="./impressum/">Impressum</a><a href="./datenschutz/">Datenschutz</a></div></footer>
+    </aside>
+    <main class="map-panel" aria-label="Karte mit Suchergebnissen">
+      <div id="map" tabindex="0" aria-label="Münster-Karte. Mit Pfeiltasten bewegen, mit Plus und Minus zoomen."></div>
+      <div class="map-top"><span class="map-caption"><span class="status-dot"></span> Hier spielt dein Viertel.</span><button id="share-search" class="map-button" title="Aktuelle Suche als Link kopieren"><span aria-hidden="true">↗</span> Suche teilen</button></div>
+      <button id="search-area" class="area-button" hidden>◎ In diesem Umkreis suchen</button>
+      <div class="map-key"><span class="legend-dot"></span><span id="map-count">Dein Viertel auf einen Blick</span><span class="key-divider"></span><span>Klicke auf einen Ort für mehr Infos</span></div>
+      <div class="data-notice"><span aria-hidden="true">ⓘ</span><span>Offene Ortsdaten für dein Viertel</span><a href="./copyright/">Mehr erfahren ↗</a></div>
+    </main>
+  </div>
+  <div class="mobile-switch" role="group" aria-label="Ansicht wechseln"><button id="show-list" aria-pressed="true">Liste</button><button id="show-map" aria-pressed="false">Karte</button></div>
+  <dialog id="detail" aria-labelledby="detail-title"><button class="dialog-close" id="close-detail" aria-label="Details schließen">×</button><div id="detail-content"></div></dialog>
+  <dialog id="about-dialog" aria-labelledby="about-title"><button class="dialog-close" id="close-about" aria-label="Information schließen">×</button><p class="eyebrow">OFFENE STADT. OFFENE DATEN.</p><h2 id="about-title">Münster ist für alle da.</h2><p>Mein Münster macht Orte in deiner Nachbarschaft sichtbar – vom Spielplatz bis zur nächsten Bücherei. Ein Projekt aus dem Umfeld von Code for Münster, auf Grundlage offener Daten.</p><p>Die Suche läuft auf deinem Gerät. Deinen Standort verwenden wir erst, wenn du „In meiner Nähe“ auswählst.</p><p>Der übernommene Datenbestand kann veraltet sein.</p><a href="./copyright/">Daten und Quellen ansehen ↗</a></dialog>
+  <noscript><div class="noscript">Bitte aktiviere JavaScript für Suche und Karte. <a href="./copyright/">Informationen zu den Daten</a></div></noscript>
+</body>
+</html>

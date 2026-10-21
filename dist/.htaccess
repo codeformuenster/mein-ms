@@ -1,0 +1,16 @@
+# Optional Apache configuration; requires AllowOverride FileInfo Options.
+# No SPA rewrite is needed: every entry point has a real index.html.
+Options -Indexes -MultiViews
+DirectoryIndex index.html
+<IfModule mod_mime.c>
+  AddType text/javascript .mjs
+</IfModule>
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "no-referrer"
+  Header always set Permissions-Policy "geolocation=(self), camera=(), microphone=()"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  <FilesMatch "\.(json|mjs|html|css)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
