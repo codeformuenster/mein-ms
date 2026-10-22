@@ -20,7 +20,7 @@ const preferred=['playground','kindergarden','wc','pool','library','babychange']
 function message(text,error=false){$('message').textContent=text;$('message').classList.toggle('error',error);}
 async function fetchJson(path){const response=await fetch(new URL(path,import.meta.url),{cache:'no-cache'});if(!response.ok)throw new Error(`Datei ${path} nicht erreichbar (${response.status}).`);return response.json();}
 function props(p){return Object.fromEntries(Object.entries(p.source.properties||{}).map(([k,v])=>[normalize(k),v]));}
-function address(p){const v=props(p);return p.source.address?.street||v.adresse||[v.strname||v.str_name||v.strasse||v.street,v.hsnr,v.hsnr_zus].filter(Boolean).join(' ')||v.location||'';}
+function address(p){const v=props(p);return p.source.address?.street||v.adresse||[v.strname||v.str_name||v.strasse||v.straße||v.street,v.hsnr,v.hsnr_zus].filter(Boolean).join(' ')||v.location||'';}
 function makeIcon(c,extra=''){const node=el('span',`icon-wrap ${extra}`);node.dataset.color=c.color;node.innerHTML=icon(c.icon);return node;}
 function formatCount(n){return n.toLocaleString('de-DE');}
 function updateControls(){
@@ -124,7 +124,7 @@ function renderPins(){
     if(!cluster)markers.set(p.id,marker);
   }
 }
-const propertyLabels={name:'Name',adresse:'Adresse',strasse:'Straße',strname:'Straße',str_name:'Straße',hsnr:'Hausnummer',plz:'Postleitzahl',ort:'Ort',tel:'Telefon',homepage:'Website',url:'Website',link:'Website',link1:'Weitere Informationen',link2:'Weitere Informationen',opening_hours:'Öffnungszeiten',barrierefrei:'Barrierefrei',montag:'Montag',dienstag:'Dienstag',mittwoch:'Mittwoch',donnerstag:'Donnerstag',freitag:'Freitag',samstag:'Samstag',sonntag:'Sonntag',beschreibung:'Beschreibung',description:'Beschreibung',schooltype:'Schulart',groesse:'Größe (m²)',quelle:'Quelle',hinweis:'Hinweis',wlan_status:'WLAN-Status',zusatz_service:'Zusätzliche Angebote'};
+const propertyLabels={name:'Name',adresse:'Adresse',strasse:'Straße',strname:'Straße',str_name:'Straße',hsnr:'Hausnummer',plz:'Postleitzahl',ort:'Ort',tel:'Telefon',homepage:'Website',url:'Website',link:'Website',link1:'Weitere Informationen',link2:'Weitere Informationen',opening_hours:'Öffnungszeiten',barrierefrei:'Barrierefrei',montag:'Montag',dienstag:'Dienstag',mittwoch:'Mittwoch',donnerstag:'Donnerstag',freitag:'Freitag',samstag:'Samstag',sonntag:'Sonntag',beschreibung:'Beschreibung',description:'Beschreibung',schooltype:'Schulart',groesse:'Größe (m²)',quelle:'Quelle',hinweis:'Hinweis',landesgefordert:'Landesgefördert', 'u3-platze':'Plätze für Kinder unter 3 Jahren', wheelchair:'Rollstuhlgerecht', operator:'Betreiber', phone:'Telefon', website:'Website', bereich:'Bereich', ball:'Ballspiel', skater:'Skaten', streetball:'Streetball', anzahl:'Anzahl', standpunkt:'Standort', objekt:'Ausstattung', recycling_type:'Sammelart', amenity:'Angebot', wlan_status:'WLAN-Status',zusatz_service:'Zusätzliche Angebote'};
 function showDetail(p){
   selected=p;lastFocus=document.activeElement;state.selected=p.id;rememberedUrl();
   const c=category(p.source.type),s=p.source,v=props(p),root=$('detail-content');root.replaceChildren();
@@ -132,31 +132,40 @@ function showDetail(p){
   const title=el('h2','',nameOf(p));title.id='detail-title';root.append(title);
   root.append(el('p','detail-meta',[address(p),districtAt(districts,p.lat,p.lon)?.properties.Name,fmtDistance(distance(state.center,[p.lat,p.lon]))+' vom Suchmittelpunkt'].filter(Boolean).join(' · ')));
   const desc=s.description||v.description||v.beschreibung;if(desc)root.append(el('p','detail-description',plain(desc)));
-  if((p.variants?.length||0)>1){
-    root.append(el('p','detail-meta',variantSummary(p)||'Mehrere Quellangaben am selben Ort'));
-    const section=el('details','detail-properties');section.append(el('summary','','Weitere Angaben zu dieser Anlage'));
-    for(const variant of p.variants){
-      const group=el('div');group.append(el('h3','',variant.source.properties?.Teilprodukt||variant.source.properties?.Produkt||'Quellangabe'));
-      const dl=el('dl');
-      for(const [key,value] of Object.entries(variant.source.properties||{}))if(value!==null&&value!=='')dl.append(el('dt','',propertyLabels[normalize(key)]||key),el('dd','',textValue(value)));
-      dl.append(el('dt','','Datensatz-ID'),el('dd','',variant.sourceId));group.append(dl);section.append(group);
+  // Keep useful source fields visible for every category, including unknown future fields.
+  const technical=/^(id|lfdnr|name|einrichtung name|rechtswert|hochwert|geokoordinate|koordinaten?|lat|lon|latitude|longitude|geometry)$/;
+  const duplicate=/^(adresse|strasse|straße|strname|str_name|hsnr|hsnr_zus|plz|ort|beschreibung|description)$/;
+  const extra=el('details','detail-properties');extra.append(el('summary','','Weitere Angaben'));
+  const variants=p.variants?.length?p.variants:[p];
+  for(const variant of variants){
+    const dl=el('dl','detail-facts'),internal=el('dl');
+    for(const [key,value] of Object.entries(variant.source.properties||{})){
+      if(value===null||value==='')continue;
+      const normalized=normalize(key);
+      if(duplicate.test(normalized)||/^link\d*_txt$/.test(normalized))continue;
+      const target=technical.test(normalized)?internal:dl;
+      const label=({'U3-Plätze':'Plätze für Kinder unter 3 Jahren','Ü3-Plätze':'Plätze für Kinder ab 3 Jahren','Plätze Schulkinder':'Plätze für Schulkinder'})[key]||propertyLabels[normalized]||key.replace(/^recycling:/,'Recycling: ').replaceAll('_',' ');
+      const dd=el('dd');const url=safeUrl(value);
+      if(url){const link=el('a','',variant.source.properties?.[key+'_TXT']||'Weitere Informationen ↗');link.href=url;link.target='_blank';link.rel='noopener noreferrer';dd.append(link);}
+      else if(['barrierefrei','wheelchair'].includes(normalized)&&/^[JN]$/i.test(String(value)))dd.textContent=String(value).toUpperCase()==='J'?'Ja':'Nein';
+      else if(/Plätze|^Anzahl$/.test(label)&&Number.isFinite(Number(value)))dd.textContent=Number(value).toLocaleString('de-DE');
+      else dd.textContent=typeof value==='boolean'?(value?'Ja':'Nein'):textValue(value);
+      target.append(el('dt','',label),dd);
     }
-    root.append(section);
+    if(dl.children.length){
+      if(variants.length>1)root.append(el('h3','detail-variant',variant.source.properties?.Teilprodukt||variant.source.properties?.Produkt||'Angaben zum Ort'));
+      root.append(dl);
+    }
+    internal.append(el('dt','','Datensatz-ID'),el('dd','',variant.sourceId));extra.append(internal);
   }
-  const actions=el('div','detail-actions');
-  const sourceUrl=[s.url,v.url,v.homepage,v.link,v.link1].map(safeUrl).find(Boolean);
-  if(sourceUrl){const a=el('a','','Weitere Informationen ↗');a.href=sourceUrl;a.target='_blank';a.rel='noopener noreferrer';actions.append(a);}
-  const route=el('a','','Route planen ↗');route.href=`https://www.openstreetmap.org/directions?engine=fossgis_osrm_bike&route=;${p.lat},${p.lon}`;route.target='_blank';route.rel='noopener noreferrer';actions.append(route);
-  const share=el('button','','Ort teilen');share.type='button';share.addEventListener('click',()=>copyLink(p.id,share));actions.append(share);root.append(actions);
-  const details=el('details','detail-properties');details.append(el('summary','','Alle Angaben zum Ort'));const dl=el('dl');
-  for(const [key,value] of Object.entries(s.properties||{})){
-    if(value===null||value==='')continue;dl.append(el('dt','',propertyLabels[normalize(key)]||key));
-    const dd=el('dd');const url=safeUrl(value);
-    if(url){const a=el('a','',String(value));a.href=url;a.target='_blank';a.rel='noopener noreferrer';dd.append(a);}else dd.textContent=textValue(value);dl.append(dd);
-  }
-  dl.append(el('dt','','Datensatz-ID'),el('dd','',p.sourceId));details.append(dl);root.append(details,el('p','detail-meta','Übernommener Datenbestand. Öffnungszeiten und Angebote können sich geändert haben.'));
+  root.append(extra,el('p','detail-meta','Übernommener Datenbestand. Öffnungszeiten und Angebote können sich geändert haben.'));
   const revision=metadata.revisions?.filter(r=>r.category===s.type).at(-1);
   if(revision){const note=el('p','detail-meta',`Quell-Dateistand: ${revision.sourceDataDate||'nicht bekannt'}. Übernommen: ${new Intl.DateTimeFormat('de-DE',{dateStyle:'medium'}).format(new Date(revision.updatedAt))}. Lizenz: ${revision.license}. `);const href=safeUrl(revision.source);if(href){const a=el('a','','Quelle');a.href=href;a.target='_blank';a.rel='noopener noreferrer';note.append(a);}root.append(note);}
+  const actions=el('div','detail-actions');
+  const sourceUrl=[s.url,v.url,v.homepage,v.website,v.link,v.link1].map(safeUrl).find(Boolean);
+  if(sourceUrl){const link=el('a','','Website zum Ort ↗');link.href=sourceUrl;link.target='_blank';link.rel='noopener noreferrer';actions.append(link);}
+  const route=el('a','','Route planen ↗');route.href=`https://www.openstreetmap.org/directions?engine=fossgis_osrm_bike&route=;${p.lat},${p.lon}`;route.target='_blank';route.rel='noopener noreferrer';actions.append(route);
+  const share=el('button','','Ort teilen');share.type='button';share.addEventListener('click',()=>copyLink(p.id,share));actions.append(share);root.append(actions);
   if(map){map.setView([p.lat,p.lon],Math.max(map.getZoom(),16),{animate:false});}
   if(!$('detail').open)$('detail').showModal();
 }
@@ -175,6 +184,13 @@ for(const field of ['radius','sort'])$(field).addEventListener('change',()=>{sta
 $('all-categories').addEventListener('click',()=>{const open=$('more-categories').hidden;$('more-categories').hidden=!open;$('all-categories').setAttribute('aria-expanded',String(open));$('all-categories').textContent=open?'Weniger Kategorien −':'Alle Kategorien ＋';});
 $('reset').addEventListener('click',()=>{clearTimeout(debounce);Object.assign(state,{q:'',category:'',district:'',radius:'0',sort:'distance',center:CENTER,selected:'',privateLocation:false});locationStatus='';if(map)map.setView(CENTER,14);refresh();});
 $('load-more').addEventListener('click',()=>{pageSize+=30;renderResults();});
+// Only close when both press and release occur outside the dialog rectangle.
+for(const dialog of [$('detail'),$('about-dialog')]){
+  const outside=event=>{const r=dialog.getBoundingClientRect();return event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom;};
+  let startedOutside=false;
+  dialog.addEventListener('pointerdown',event=>{startedOutside=event.target===dialog&&outside(event);});
+  dialog.addEventListener('click',event=>{if(startedOutside&&event.target===dialog&&outside(event))dialog.close();startedOutside=false;});
+}
 $('close-detail').addEventListener('click',()=>$('detail').close());
 $('detail').addEventListener('close',()=>{state.selected='';rememberedUrl();if(lastFocus?.isConnected)lastFocus.focus();});
 $('about').addEventListener('click',()=>$('about-dialog').showModal());$('close-about').addEventListener('click',()=>$('about-dialog').close());
@@ -201,8 +217,6 @@ async function start(){
     for(const d of [...districts].sort((a,b)=>a.properties.Name.localeCompare(b.properties.Name,'de'))){const option=el('option','',d.properties.Name);option.value=d.id;$('district').append(option);}
     renderCategories();initMap();
     const requestedId=state.selected;
-    // Show expanded categories for bookmarked filters.
-    if(state.category&&!preferred.includes(state.category))$('all-categories').click();
     await refresh();
     if(requestedId){const p=places.find(p=>p.id===requestedId||p.variants?.some(v=>v.id===requestedId));if(p)showDetail(p);else message('Der geteilte Ort ist in diesem Datenbestand nicht vorhanden.',true);}
   }catch(error){message(`Die Anwendung konnte nicht geladen werden. ${error.message} Bitte lade die Seite neu.`,true);$('results').setAttribute('aria-busy','false');}
